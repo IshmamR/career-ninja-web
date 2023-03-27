@@ -15,7 +15,9 @@ const localAuthAdmin = getLocalAuthAdmin();
  *  authApplicant: null;
  *  authCompany: null;
  *  loginLoading: boolean;
+ *  loginAdminApiAction: ({username: string; password: string}, () => void, () => void) => Promise<void>;
  *  logoutLoading: boolean;
+ *  logoutAdminApiAction: (() => void, () => void) => Promise<void>;
  * }} IAuthContext
  */
 
@@ -28,6 +30,8 @@ const AuthContext = createContext({
   authCompany: null,
   loginLoading: false,
   logoutLoading: false,
+  loginAdminApi: async () => null,
+  logoutAdminApi: async () => null,
 });
 
 const AuthProvider = ({ children }) => {

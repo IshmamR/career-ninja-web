@@ -1,6 +1,6 @@
 import { Button, Form, Input, Typography } from "antd";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ADMIN_ROUTE } from "../../../constants/routes";
 import { useAuthContext } from "../../../contexts/AuthContext";
@@ -12,7 +12,10 @@ const LoginButton = styled(Button)`
 const AdminLogin = () => {
   const { loginLoading, loginAdminApiAction } = useAuthContext();
 
+  const location = useLocation();
   const navigate = useNavigate();
+
+  console.log(location);
 
   const handleFinish = (e) => {
     const { username, password } = e;
