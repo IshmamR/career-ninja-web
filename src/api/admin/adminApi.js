@@ -1,13 +1,14 @@
 import { SERVER_URL } from "../../config";
 import { apiRequest } from "../apiRequest";
 
-export function loginAdminApi(username, password) {
+export function loginAdminApi(formData) {
   return new Promise((resolve, reject) => {
-    apiRequest
-      .post(`${SERVER_URL}/api/admin/login/`, {
-        username: username,
-        password: password,
-      })
+    apiRequest({
+      method: "POST",
+      url: `${SERVER_URL}/api/admin/login/`,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
       .then(resolve)
       .catch(reject);
   });

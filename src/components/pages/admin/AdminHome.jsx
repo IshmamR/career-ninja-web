@@ -9,7 +9,7 @@ const LoginButton = styled(Button)`
   width: 100%;
 `;
 
-const AdminLogin = () => {
+const AdminHome = () => {
   const { loginAdminApiAction } = useAuthContext();
 
   const navigate = useNavigate();
@@ -21,4 +21,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default AdminHome;

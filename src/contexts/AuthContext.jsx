@@ -35,7 +35,7 @@ const AuthContext = createContext({
 });
 
 const AuthProvider = ({ children }) => {
-  const [authAdmin, setAuthAdmin] = useState(null);
+  const [authAdmin, setAuthAdmin] = useState(localAuthAdmin);
   const [loginLoading, setLoginLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
@@ -43,7 +43,10 @@ const AuthProvider = ({ children }) => {
     async ({ username, password }, onSuccess, onFailure) => {
       setLoginLoading(true);
       try {
-        const { data } = await loginAdminApi(username, password);
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        const { data } = await loginAdminApi(formData);
         setAuthAdmin(data);
         setLocalAuthAdmin(data);
         setLoginLoading(false);
