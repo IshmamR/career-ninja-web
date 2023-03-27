@@ -7,7 +7,10 @@ export function loginAdminApi(formData) {
       method: "POST",
       url: `${SERVER_URL}/api/admin/login/`,
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
+      },
     })
       .then(resolve)
       .catch(reject);
