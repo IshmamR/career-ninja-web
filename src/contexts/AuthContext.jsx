@@ -43,10 +43,7 @@ const AuthProvider = ({ children }) => {
     async ({ username, password }, onSuccess, onFailure) => {
       setLoginLoading(true);
       try {
-        const formData = new FormData();
-        formData.append("username", username);
-        formData.append("password", password);
-        const { data } = await loginAdminApi(formData);
+        const { data } = await loginAdminApi({ username, password });
         setAuthAdmin(data);
         setLocalAuthAdmin(data);
         setLoginLoading(false);

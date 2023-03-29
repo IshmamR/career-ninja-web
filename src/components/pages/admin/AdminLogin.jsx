@@ -5,6 +5,13 @@ import styled from "styled-components";
 import { ADMIN_LOGIN_ROUTE, ADMIN_ROUTE } from "../../../constants/routes";
 import { useAuthContext } from "../../../contexts/AuthContext";
 
+const FormContainer = styled.div`
+  width: 500px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding-top: 3rem;
+`;
+
 const LoginButton = styled(Button)`
   width: 100%;
 `;
@@ -34,9 +41,11 @@ const AdminLogin = () => {
   };
 
   return (
-    <div>
+    <FormContainer>
       <Form onFinish={handleFinish}>
-        <Typography.Title>Admin Login</Typography.Title>
+        <Typography.Title level={2} style={{ textAlign: "center" }}>
+          Admin Login
+        </Typography.Title>
         <Form.Item name="username">
           <Input size="large" placeholder="username" />
         </Form.Item>
@@ -52,7 +61,7 @@ const AdminLogin = () => {
           Login
         </LoginButton>
       </Form>
-    </div>
+    </FormContainer>
   );
 };
 

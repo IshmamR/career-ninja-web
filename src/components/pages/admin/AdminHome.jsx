@@ -1,23 +1,42 @@
-import { Button, Form, Input, Typography } from "antd";
+import { Button } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ADMIN_ROUTE } from "../../../constants/routes";
+import { ADMIN_LOGIN_ROUTE } from "../../../constants/routes";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import AdminDashboardLayout from "../../layouts/AdminDashboardLayout";
 
-const LoginButton = styled(Button)`
-  width: 100%;
+const BoxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
 `;
 
 const AdminHome = () => {
-  const { loginAdminApiAction } = useAuthContext();
+  const { logoutLoading, logoutAdminApiAction } = useAuthContext();
 
   const navigate = useNavigate();
 
+  const onClickLogout = () => {
+    logoutAdminApiAction(() => {
+      navigate(ADMIN_LOGIN_ROUTE);
+    });
+  };
+
   return (
-    <div>
-      <Button type="danger">Logout</Button>
-    </div>
+    <AdminDashboardLayout>
+      <BoxContainer>
+        <Button
+          type="primary"
+          size="large"
+          loading={logoutLoading}
+          onClick={onClickLogout}
+        >
+          Logout
+        </Button>
+      </BoxContainer>
+    </AdminDashboardLayout>
   );
 };
 

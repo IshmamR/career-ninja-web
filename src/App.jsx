@@ -1,3 +1,4 @@
+import { ConfigProvider } from "antd";
 import React from "react";
 import "./App.css";
 import AuthProvider from "./contexts/AuthContext";
@@ -5,9 +6,17 @@ import Routers from "./routers";
 
 function App() {
   return (
-    <AuthProvider>
-      <Routers />
-    </AuthProvider>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#00b96b",
+        },
+      }}
+    >
+      <AuthProvider>
+        <Routers />
+      </AuthProvider>
+    </ConfigProvider>
   );
 }
 
