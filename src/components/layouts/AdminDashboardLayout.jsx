@@ -5,9 +5,11 @@ import {
   MailOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu, Space, Typography } from "antd";
+import { Dropdown, Menu, Space, Typography } from "antd";
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ADMIN_LOGIN_ROUTE } from "../../constants/routes";
 import { useAuthContext } from "../../contexts/AuthContext";
 
 const MainContainer = styled.div`
@@ -42,12 +44,29 @@ function getItem(label, key, icon, children, type) {
 }
 
 const AdminDashboardLayout = ({ children }) => {
-  const { authAdmin } = useAuthContext();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { authAdmin, logoutAdminApiAction } = useAuthContext();
+
+  const onClickLogout = () => {
+    logoutAdminApiAction(() => {
+      navigate(ADMIN_LOGIN_ROUTE);
+    });
+  };
 
   const items = [
-    getItem("Companies", "/admin/companies", <MailOutlined />),
+    getItem(
+      <a href="/admin/companies">Companies</a>,
+      "/admin/companies",
+      <MailOutlined />
+    ),
 
-    getItem("Circulars", "/admin/circulars", <SettingOutlined />),
+    getItem(
+      <a href="/admin/circulars">Circulars</a>,
+      "/admin/circulars",
+      <SettingOutlined />
+    ),
 
     { type: "divider" },
 
@@ -61,6 +80,7 @@ const AdminDashboardLayout = ({ children }) => {
       key: "1",
       label: "Logout",
       icon: <LogoutOutlined />,
+      onClick: onClickLogout,
     },
   ];
 
@@ -75,6 +95,7 @@ const AdminDashboardLayout = ({ children }) => {
           style={{ width: 240 }}
           mode="inline"
           items={items}
+          activeKey={location.pathname}
         />
       </SideBarContainer>
 

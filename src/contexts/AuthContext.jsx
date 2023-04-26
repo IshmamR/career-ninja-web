@@ -44,8 +44,9 @@ const AuthProvider = ({ children }) => {
       setLoginLoading(true);
       try {
         const { data } = await loginAdminApi({ username, password });
-        setAuthAdmin(data);
-        setLocalAuthAdmin(data);
+        const { admin, authToken } = data;
+        setAuthAdmin(admin);
+        setLocalAuthAdmin(admin);
         setLoginLoading(false);
         if (onSuccess) onSuccess();
       } catch (err) {

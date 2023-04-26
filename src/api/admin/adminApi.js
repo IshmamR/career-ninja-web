@@ -4,7 +4,7 @@ import { apiRequest } from "../apiRequest";
 export function loginAdminApi({ username, password }) {
   return new Promise((resolve, reject) => {
     apiRequest
-      .post(`${SERVER_URL}/api/admin/login/`, {
+      .post(`${SERVER_URL}/api/admin/login`, {
         username: username,
         password: password,
       })
@@ -16,7 +16,7 @@ export function loginAdminApi({ username, password }) {
 export function logoutAdminApi() {
   return new Promise((resolve, reject) => {
     apiRequest
-      .post(`${SERVER_URL}/api/admin/logout/`)
+      .put(`${SERVER_URL}/api/admin/logout`)
       .then(resolve)
       .catch(reject);
   });
