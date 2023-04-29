@@ -1,15 +1,14 @@
-import { Button, Form, Input, Typography, Upload } from "antd";
+import { Button, Form, Input, Select, Typography, Upload } from "antd";
 import React, { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { ADMIN_LOGIN_ROUTE, ADMIN_ROUTE } from "../../../constants/routes";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { storage } from "../../../../firebase";
 import { companySignupApi } from "../../../api/company/companyApi";
 import { showErrorToastAction, showToastAction } from "../../../utils/toast";
 import { COMPANY_LOGIN_ROUTE } from "../../../constants/routes";
+import { Gap } from "../../common/spaces";
 
 const FormContainer = styled.div`
   width: 500px;
@@ -42,7 +41,7 @@ const initialCompanyData = {
   email: "",
   contact: "",
   website: "",
-  country: "",
+  country: undefined,
   city: "",
 };
 
@@ -64,6 +63,7 @@ const CompanySignup = () => {
   // logo
   const [imageUploading, setImageUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState(null);
 
   // submission
   const [submissionLoading, setSubmissionLoading] = useState(false);
@@ -72,49 +72,19 @@ const CompanySignup = () => {
     return <Navigate to={ADMIN_ROUTE} />;
   }
 
-  const handleUpload = async (file) => {
+  const handleBeforeUpload = async (file) => {
     if (!file) {
       console.error(`not an image, the image file is a ${typeof file}`);
       return;
     }
 
-    setImageUploading(true);
+    setImageFile(file);
 
-    const storageRef = ref(storage, `company/logo/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        console.log(progress);
-        // setProgresspercent(progress);
-      },
-      (error) => {
-        console.log(error);
-        setImageUploading(false);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setImageUrl(downloadURL);
-          setCompany((prev) => ({ ...prev, logo: downloadURL }));
-          setImageUploading(false);
-        });
-      }
-    );
-  };
-
-  const uploadProps = {
-    onRemove: () => {
-      setImageUrl("");
-    },
-    beforeUpload: (file) => {
-      handleUpload(file);
-      return false;
-    },
-    multiple: false,
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageUrl(reader.result);
+    };
+    reader.readAsDataURL(selectedImage);
   };
 
   const handleFinish = (e) => {
@@ -135,10 +105,19 @@ const CompanySignup = () => {
 
   const onSubmit = async (e) => {
     const { username, password } = e;
+
+    if (!username || !password) return;
+
     setCompanyAdmin({ username, password });
     try {
       setSubmissionLoading(true);
-      const { data } = await companySignupApi({ company, companyAdmin });
+
+      const formData = new FormData();
+      formData.append("company", JSON.stringify(company));
+      formData.append("companyAdmin", JSON.stringify({ username, password }));
+      formData.append("image", imageFile);
+
+      const { data } = await companySignupApi(formData);
       showToastAction({ message: data.message });
       navigate(COMPANY_LOGIN_ROUTE);
     } catch (err) {
@@ -158,7 +137,19 @@ const CompanySignup = () => {
           </Typography.Title>
 
           <UploadContainer>
-            <Upload name="logo" listType="picture-card" {...uploadProps}>
+            <Upload
+              name="logo"
+              listType="picture-card"
+              onRemove={() => {
+                setImageUrl("");
+              }}
+              beforeUpload={(file) => {
+                handleBeforeUpload(file);
+                return false;
+              }}
+              multiple={false}
+              maxCount={1}
+            >
               {imageUrl ? (
                 <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
               ) : (
@@ -186,7 +177,13 @@ const CompanySignup = () => {
             <Input size="large" placeholder="Website" />
           </Form.Item>
           <Form.Item name="country">
-            <Input size="large" placeholder="Country" />
+            <Select
+              allowClear
+              size="large"
+              placeholder="Country"
+              style={{ width: "100%" }}
+              options={[{ label: "BD", value: "BD" }]}
+            />
           </Form.Item>
           <Form.Item name="city">
             <Input size="large" placeholder="City" />
@@ -220,6 +217,13 @@ const CompanySignup = () => {
           </ButtonsContainer>
         </Form>
       )}
+
+      <Gap height="1rem" />
+
+      <Typography.Paragraph style={{ textAlign: "right" }}>
+        Already have your company registered?&nbsp;
+        <Link to={COMPANY_LOGIN_ROUTE}>Login</Link>
+      </Typography.Paragraph>
     </FormContainer>
   );
 };

@@ -1,15 +1,12 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { COMPANY_LOGIN_ROUTE } from "../constants/routes";
 
 const CompanyAdminRouter = () => {
-  const { authCompanyAdmin } = useAuthContext();
+  const { authCompany } = useAuthContext();
 
-  return !!authCompanyAdmin ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/company/admin/login" />
-  );
+  return !!authCompany ? <Outlet /> : <Navigate to={COMPANY_LOGIN_ROUTE} />;
 };
 
 export default CompanyAdminRouter;

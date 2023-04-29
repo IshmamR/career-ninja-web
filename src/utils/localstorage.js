@@ -8,7 +8,7 @@ const LOCAL_KEYS = {
     authApplicantToken: "@auth_applicant_token_local",
   },
   company: {
-    authCompany: "@auth_company_local",
+    companyAdmin: "@auth_company_local",
     authCompanyToken: "@auth_company_token_local",
   },
 };
@@ -33,4 +33,35 @@ export function setLocalAuthAdminAndToken(authAdmin, authAdminToken) {
 export function removeLocalAuthAdminAndToken() {
   localStorage.removeItem(LOCAL_KEYS.admin.authAdmin);
   localStorage.removeItem(LOCAL_KEYS.admin.authAdminToken);
+}
+
+export function getLocalAuthCompanyAdminAndToken() {
+  const authLocal = localStorage.getItem(LOCAL_KEYS.company.companyAdmin);
+  const authTokenLocal = localStorage.getItem(
+    LOCAL_KEYS.company.authCompanyToken
+  );
+  if (authLocal) {
+    return {
+      companyAdmin: JSON.parse(authLocal),
+      authCompanyToken: authTokenLocal,
+    };
+  }
+  return null;
+}
+
+export function setLocalAuthCompanyAdminAndToken(
+  companyAdmin,
+  authCompanyToken
+) {
+  if (!companyAdmin) return;
+  localStorage.setItem(
+    LOCAL_KEYS.company.companyAdmin,
+    JSON.stringify(companyAdmin)
+  );
+  localStorage.setItem(LOCAL_KEYS.company.authCompanyToken, authCompanyToken);
+}
+
+export function removeLocalAuthCompanyAdminAndToken() {
+  localStorage.removeItem(LOCAL_KEYS.company.companyAdmin);
+  localStorage.removeItem(LOCAL_KEYS.company.authCompanyToken);
 }

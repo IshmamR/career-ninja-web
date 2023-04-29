@@ -1,9 +1,14 @@
 import { Button, Form, Input, Typography } from "antd";
 import React from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { ADMIN_LOGIN_ROUTE, ADMIN_ROUTE } from "../../../constants/routes";
+import {
+  COMPANY_ADMIN_ROUTE,
+  COMPANY_LOGIN_ROUTE,
+  COMPANY_SIGNUP_ROUTE,
+} from "../../../constants/routes";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { Gap } from "../../common/spaces";
 
 const FormContainer = styled.div`
   width: 500px;
@@ -16,23 +21,24 @@ const LoginButton = styled(Button)`
   width: 100%;
 `;
 
-const AdminLogin = () => {
-  const { authAdmin, loginLoading, loginAdminApiAction } = useAuthContext();
+const CompanyAdminLogin = () => {
+  const { authCompany, loginLoading, loginCompanyAdminApiAction } =
+    useAuthContext();
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (authAdmin && location.pathname === ADMIN_LOGIN_ROUTE) {
-    return <Navigate to={ADMIN_ROUTE} />;
+  if (authCompany && location.pathname === COMPANY_LOGIN_ROUTE) {
+    return <Navigate to={COMPANY_ADMIN_ROUTE} />;
   }
 
   const handleFinish = (e) => {
     const { username, password } = e;
-    loginAdminApiAction(
+    loginCompanyAdminApiAction(
       { username, password },
       () => {
         // success
-        navigate(ADMIN_ROUTE);
+        navigate(COMPANY_ADMIN_ROUTE);
       },
       () => {
         // failure
@@ -44,7 +50,7 @@ const AdminLogin = () => {
     <FormContainer>
       <Form onFinish={handleFinish}>
         <Typography.Title level={2} style={{ textAlign: "center" }}>
-          Admin Login
+          Company Login
         </Typography.Title>
         <Form.Item name="username">
           <Input size="large" placeholder="username" />
@@ -61,8 +67,15 @@ const AdminLogin = () => {
           Login
         </LoginButton>
       </Form>
+
+      <Gap height="1rem" />
+
+      <Typography.Paragraph style={{ textAlign: "right" }}>
+        Don't have your company registered yet?&nbsp;
+        <Link to={COMPANY_SIGNUP_ROUTE}>Register now</Link>
+      </Typography.Paragraph>
     </FormContainer>
   );
 };
 
-export default AdminLogin;
+export default CompanyAdminLogin;

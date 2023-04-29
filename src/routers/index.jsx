@@ -18,6 +18,7 @@ import CompanyAdminRouter from "./CompanyAdminRouter";
 import CompanySignup from "../components/pages/company/CompanySignup";
 import AllFields from "../components/pages/admin/fields/AllFields";
 import AllSkills from "../components/pages/admin/skills/AllSkills";
+import CompanyAdminLogin from "../components/pages/company/CompanyLogin";
 
 const Routers = () => {
   return (
@@ -35,7 +36,7 @@ const Routers = () => {
           <Route element={<AllCompanies />} path={COMPANY_ADMIN_ROUTE} />
         </Route>
         <Route element={<CompanySignup />} path={COMPANY_SIGNUP_ROUTE} />
-        <Route element={<AdminLogin />} path={COMPANY_LOGIN_ROUTE} />
+        <Route element={<CompanyAdminLogin />} path={COMPANY_LOGIN_ROUTE} />
       </Routes>
     </Router>
   );
