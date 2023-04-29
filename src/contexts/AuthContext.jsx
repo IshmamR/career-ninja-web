@@ -1,13 +1,14 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { loginAdminApi, logoutAdminApi } from "../api/admin/adminApi";
 import {
-  getLocalAuthAdmin,
-  removeLocalAuthAdmin,
-  setLocalAuthAdmin,
+  getLocalAuthAdminAndToken,
+  removeLocalAuthAdminAndToken,
+  setLocalAuthAdminAndToken,
 } from "../utils/localstorage";
 import { showErrorToastAction } from "../utils/toast";
+import { removeAuthorizationApi, setAuthorizationApi } from "../api/apiRequest";
 
-const localAuthAdmin = getLocalAuthAdmin();
+const localAuthAdmin = getLocalAuthAdminAndToken();
 
 /**
  * @typedef {{
@@ -35,18 +36,23 @@ const AuthContext = createContext({
 });
 
 const AuthProvider = ({ children }) => {
-  const [authAdmin, setAuthAdmin] = useState(localAuthAdmin);
+  const [authAdmin, setAuthAdmin] = useState(localAuthAdmin?.authAdmin ?? null);
   const [loginLoading, setLoginLoading] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
+
+  if (localAuthAdmin) {
+    setAuthorizationApi(localAuthAdmin.authAdminToken);
+  }
 
   const loginAdminApiAction = useCallback(
     async ({ username, password }, onSuccess, onFailure) => {
       setLoginLoading(true);
       try {
         const { data } = await loginAdminApi({ username, password });
-        const { admin, authToken } = data;
+        const { admin, authAdminToken } = data;
         setAuthAdmin(admin);
-        setLocalAuthAdmin(admin);
+        setAuthorizationApi(authAdminToken);
+        setLocalAuthAdminAndToken(admin, authAdminToken);
         setLoginLoading(false);
         if (onSuccess) onSuccess();
       } catch (err) {
@@ -65,8 +71,9 @@ const AuthProvider = ({ children }) => {
     setLogoutLoading(true);
     try {
       await logoutAdminApi();
+      removeLocalAuthAdminAndToken();
+      removeAuthorizationApi();
       setAuthAdmin(null);
-      removeLocalAuthAdmin();
       setLogoutLoading(false);
       if (onSuccess) onSuccess();
     } catch (err) {

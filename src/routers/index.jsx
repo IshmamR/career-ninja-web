@@ -4,6 +4,7 @@ import AdminHome from "../components/pages/admin/AdminHome";
 import AdminLogin from "../components/pages/admin/AdminLogin";
 import {
   ADMIN_COMPANIES,
+  ADMIN_FIELDS,
   ADMIN_LOGIN_ROUTE,
   ADMIN_ROUTE,
   COMPANY_ADMIN_ROUTE,
@@ -14,6 +15,7 @@ import AdminRouter from "./AdminRouter";
 import AllCompanies from "../components/pages/admin/company/AllCompanies";
 import CompanyAdminRouter from "./CompanyAdminRouter";
 import CompanySignup from "../components/pages/company/CompanySignup";
+import AllFields from "../components/pages/admin/fields/AllFields";
 
 const Routers = () => {
   return (
@@ -22,6 +24,7 @@ const Routers = () => {
         <Route element={<AdminRouter />}>
           <Route element={<AdminHome />} path={ADMIN_ROUTE} />
           <Route element={<AllCompanies />} path={ADMIN_COMPANIES} />
+          <Route element={<AllFields />} path={ADMIN_FIELDS} />
         </Route>
         <Route element={<AdminLogin />} path={ADMIN_LOGIN_ROUTE} />
 
