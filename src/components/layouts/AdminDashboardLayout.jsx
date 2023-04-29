@@ -69,6 +69,12 @@ const AdminDashboardLayout = ({ children }) => {
     ),
 
     getItem(
+      <a href="/admin/skills">Skills</a>,
+      "/admin/skills",
+      <MailOutlined />
+    ),
+
+    getItem(
       <a href="/admin/circulars">Circulars</a>,
       "/admin/circulars",
       <SettingOutlined />

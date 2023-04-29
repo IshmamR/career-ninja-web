@@ -7,6 +7,7 @@ import {
   ADMIN_FIELDS,
   ADMIN_LOGIN_ROUTE,
   ADMIN_ROUTE,
+  ADMIN_SKILLS,
   COMPANY_ADMIN_ROUTE,
   COMPANY_LOGIN_ROUTE,
   COMPANY_SIGNUP_ROUTE,
@@ -16,6 +17,7 @@ import AllCompanies from "../components/pages/admin/company/AllCompanies";
 import CompanyAdminRouter from "./CompanyAdminRouter";
 import CompanySignup from "../components/pages/company/CompanySignup";
 import AllFields from "../components/pages/admin/fields/AllFields";
+import AllSkills from "../components/pages/admin/skills/AllSkills";
 
 const Routers = () => {
   return (
@@ -25,6 +27,7 @@ const Routers = () => {
           <Route element={<AdminHome />} path={ADMIN_ROUTE} />
           <Route element={<AllCompanies />} path={ADMIN_COMPANIES} />
           <Route element={<AllFields />} path={ADMIN_FIELDS} />
+          <Route element={<AllSkills />} path={ADMIN_SKILLS} />
         </Route>
         <Route element={<AdminLogin />} path={ADMIN_LOGIN_ROUTE} />
 
