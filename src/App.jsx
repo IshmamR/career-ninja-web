@@ -3,6 +3,7 @@ import React from "react";
 import "./App.css";
 import AuthProvider from "./contexts/AuthContext";
 import Routers from "./routers";
+import CompanyProvider from "./contexts/CompanyContext";
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
       }}
     >
       <AuthProvider>
-        <Routers />
+        <CompanyProvider>
+          <Routers />
+        </CompanyProvider>
       </AuthProvider>
     </ConfigProvider>
   );

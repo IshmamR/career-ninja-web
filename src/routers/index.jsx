@@ -11,6 +11,7 @@ import {
   COMPANY_ADMIN_ROUTE,
   COMPANY_LOGIN_ROUTE,
   COMPANY_SIGNUP_ROUTE,
+  COMPANY_ADMIN_PROFILE,
 } from "../constants/routes";
 import AdminRouter from "./AdminRouter";
 import AllCompanies from "../components/pages/admin/company/AllCompanies";
@@ -19,6 +20,8 @@ import CompanySignup from "../components/pages/company/CompanySignup";
 import AllFields from "../components/pages/admin/fields/AllFields";
 import AllSkills from "../components/pages/admin/skills/AllSkills";
 import CompanyAdminLogin from "../components/pages/company/CompanyLogin";
+import CompanyAdminHome from "../components/pages/company/CompanyAdminHome";
+import CompanyAdminProfile from "../components/pages/company/CompanyAdminProfile";
 
 const Routers = () => {
   return (
@@ -33,7 +36,11 @@ const Routers = () => {
         <Route element={<AdminLogin />} path={ADMIN_LOGIN_ROUTE} />
 
         <Route element={<CompanyAdminRouter />}>
-          <Route element={<AllCompanies />} path={COMPANY_ADMIN_ROUTE} />
+          <Route element={<CompanyAdminHome />} path={COMPANY_ADMIN_ROUTE} />
+          <Route
+            element={<CompanyAdminProfile />}
+            path={COMPANY_ADMIN_PROFILE}
+          />
         </Route>
         <Route element={<CompanySignup />} path={COMPANY_SIGNUP_ROUTE} />
         <Route element={<CompanyAdminLogin />} path={COMPANY_LOGIN_ROUTE} />

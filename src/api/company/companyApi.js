@@ -32,6 +32,28 @@ export function companyLogoutApi() {
   });
 }
 
+export function getCompanyProfileApi() {
+  return new Promise((resolve, reject) => {
+    apiRequest
+      .get(`${SERVER_URL}/api/company/profile`)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+export function updateCompanyProfileApi(data) {
+  return new Promise((resolve, reject) => {
+    apiRequest
+      .put(`${SERVER_URL}/api/company/update`, data)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+/////////////////////////
+// BELOW ARE FOR ADMIN //
+/////////////////////////
+
 export function verifyCompanyApi(companyId) {
   return new Promise((resolve, reject) => {
     apiRequest
