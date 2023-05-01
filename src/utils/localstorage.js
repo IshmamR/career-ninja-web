@@ -13,6 +13,10 @@ const LOCAL_KEYS = {
   },
 };
 
+///////////
+// admin //
+///////////
+
 export function getLocalAuthAdminAndToken() {
   const authLocal = localStorage.getItem(LOCAL_KEYS.admin.authAdmin);
   const authTokenLocal = localStorage.getItem(LOCAL_KEYS.admin.authAdminToken);
@@ -34,6 +38,10 @@ export function removeLocalAuthAdminAndToken() {
   localStorage.removeItem(LOCAL_KEYS.admin.authAdmin);
   localStorage.removeItem(LOCAL_KEYS.admin.authAdminToken);
 }
+
+/////////////
+// company //
+/////////////
 
 export function getLocalAuthCompanyAdminAndToken() {
   const authLocal = localStorage.getItem(LOCAL_KEYS.company.companyAdmin);
@@ -64,4 +72,42 @@ export function setLocalAuthCompanyAdminAndToken(
 export function removeLocalAuthCompanyAdminAndToken() {
   localStorage.removeItem(LOCAL_KEYS.company.companyAdmin);
   localStorage.removeItem(LOCAL_KEYS.company.authCompanyToken);
+}
+
+///////////////
+// applicant //
+///////////////
+
+export function getLocalAuthApplicantAndToken() {
+  const authLocal = localStorage.getItem(LOCAL_KEYS.applicant.authApplicant);
+  const authTokenLocal = localStorage.getItem(
+    LOCAL_KEYS.applicant.authApplicantToken
+  );
+  if (authLocal) {
+    return {
+      authApplicant: JSON.parse(authLocal),
+      authApplicantToken: authTokenLocal,
+    };
+  }
+  return null;
+}
+
+export function setLocalAuthApplicantAndToken(
+  authApplicant,
+  authApplicantToken
+) {
+  if (!authApplicant) return;
+  localStorage.setItem(
+    LOCAL_KEYS.applicant.authApplicant,
+    JSON.stringify(authApplicant)
+  );
+  localStorage.setItem(
+    LOCAL_KEYS.applicant.authApplicantToken,
+    authApplicantToken
+  );
+}
+
+export function removeLocalAuthApplicantAndToken() {
+  localStorage.removeItem(LOCAL_KEYS.applicant.authApplicant);
+  localStorage.removeItem(LOCAL_KEYS.applicant.authApplicantToken);
 }

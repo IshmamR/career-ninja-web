@@ -1,4 +1,5 @@
 import { ConfigProvider } from "antd";
+import { BrowserRouter as Router } from "react-router-dom";
 import React from "react";
 import "./App.css";
 import AuthProvider from "./contexts/AuthContext";
@@ -14,11 +15,13 @@ function App() {
         },
       }}
     >
-      <AuthProvider>
-        <CompanyProvider>
-          <Routers />
-        </CompanyProvider>
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <CompanyProvider>
+            <Routers />
+          </CompanyProvider>
+        </AuthProvider>
+      </Router>
     </ConfigProvider>
   );
 }

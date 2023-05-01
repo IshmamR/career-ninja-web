@@ -80,11 +80,11 @@ const CompanySignup = () => {
 
     setImageFile(file);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageUrl(reader.result);
-    };
-    reader.readAsDataURL(selectedImage);
+    // const reader = new FileReader();
+    // reader.onload = () => {
+    //   setImageUrl(reader.result);
+    // };
+    // reader.readAsDataURL(file);
   };
 
   const handleFinish = (e) => {

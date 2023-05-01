@@ -8,6 +8,7 @@ export const Gap = styled.div`
 
 export const FlexContainer = styled.div`
   display: flex;
+  flex-direction: ${({ flexDirection }) => flexDirection};
   align-items: ${({ alignItems }) => alignItems};
   justify-content: ${({ justifyContent }) => justifyContent};
   gap: ${({ gap }) => gap};

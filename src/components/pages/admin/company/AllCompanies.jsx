@@ -1,4 +1,4 @@
-import { Alert, Button, Table } from "antd";
+import { Button, Table } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminDashboardLayout from "../../../layouts/AdminDashboardLayout";
@@ -10,6 +10,7 @@ import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { SERVER_URL } from "../../../../config";
 import { useAuthContext } from "../../../../contexts/AuthContext";
 import { handlePrivateApiError } from "../../../../api/errorHandlers";
+import { showErrorToastAction } from "../../../../utils/toast";
 
 const CompanyLogo = styled.img`
   width: 40px;
@@ -44,7 +45,9 @@ const AllCompanies = () => {
           err,
           logoutAdminApiAction
         );
-        Alert({ message: data?.message || error || "Something went wrong" });
+        showErrorToastAction({
+          message: data?.message || error || "Something went wrong",
+        });
       }
     },
     [pageNo, logoutAdminApiAction]
@@ -69,7 +72,9 @@ const AllCompanies = () => {
           err,
           logoutAdminApiAction
         );
-        Alert({ message: data?.message || error || "Something went wrong" });
+        showErrorToastAction({
+          message: data?.message || error || "Something went wrong",
+        });
       } finally {
       }
     },

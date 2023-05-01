@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Modal, Table } from "antd";
+import { Button, Input, Modal, Table } from "antd";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   addFieldApi,
@@ -8,6 +8,7 @@ import {
 import { handlePrivateApiError } from "../../../../api/errorHandlers";
 import { useAuthContext } from "../../../../contexts/AuthContext";
 import AdminDashboardLayout from "../../../layouts/AdminDashboardLayout";
+import { showErrorToastAction } from "../../../../utils/toast";
 
 const AllFields = () => {
   const { logoutAdminApiAction } = useAuthContext();
@@ -40,7 +41,9 @@ const AllFields = () => {
           err,
           logoutAdminApiAction
         );
-        Alert({ message: data?.message || error || "Something went wrong" });
+        showErrorToastAction({
+          message: data?.message || error || "Something went wrong",
+        });
       }
     },
     [pageNo]
@@ -71,7 +74,9 @@ const AllFields = () => {
     } catch (err) {
       setAddModal((prev) => ({ ...prev, loading: false }));
       const { data, error } = handlePrivateApiError(err, logoutAdminApiAction);
-      Alert({ message: data?.message || error || "Something went wrong" });
+      showErrorToastAction({
+        message: data?.message || error || "Something went wrong",
+      });
     }
   };
 
@@ -84,7 +89,9 @@ const AllFields = () => {
     } catch (err) {
       setDeleteLoading(undefined);
       const { data, error } = handlePrivateApiError(err, logoutAdminApiAction);
-      Alert({ message: data?.message || error || "Something went wrong" });
+      showErrorToastAction({
+        message: data?.message || error || "Something went wrong",
+      });
     }
   };
 

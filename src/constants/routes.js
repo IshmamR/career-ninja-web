@@ -1,4 +1,9 @@
 export const HOME_ROUTE = "/";
+export const JOB_SEARCH_ROUTE = "/job/search";
+
+export const APPLICANT_LOGIN_PAGE = "/login";
+export const APPLICANT_REGISTER_PAGE = "/register";
+export const APPLICANT_PROFILE = "/profile";
 
 export const ADMIN_ROUTE = "/admin";
 export const ADMIN_LOGIN_ROUTE = "/admin/login";

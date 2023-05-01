@@ -2,53 +2,57 @@ import React, { createContext, useCallback, useContext, useState } from "react";
 import { loginAdminApi, logoutAdminApi } from "../api/admin/adminApi";
 import {
   getLocalAuthAdminAndToken,
+  getLocalAuthApplicantAndToken,
   getLocalAuthCompanyAdminAndToken,
   removeLocalAuthAdminAndToken,
+  removeLocalAuthApplicantAndToken,
   removeLocalAuthCompanyAdminAndToken,
   setLocalAuthAdminAndToken,
+  setLocalAuthApplicantAndToken,
   setLocalAuthCompanyAdminAndToken,
 } from "../utils/localstorage";
-import { showErrorToastAction } from "../utils/toast";
+import { showErrorToastAction, showToastAction } from "../utils/toast";
 import { removeAuthorizationApi, setAuthorizationApi } from "../api/apiRequest";
 import { companyLoginApi, companyLogoutApi } from "../api/company/companyApi";
 import { handlePublicApiError } from "../api/errorHandlers";
-import { Alert } from "antd";
+import {
+  loginApplicantApi,
+  logoutApplicantApi,
+  registerApplicantApi,
+} from "../api/applicant/applicantApi";
+import { useNavigate } from "react-router-dom";
+import { APPLICANT_LOGIN_PAGE } from "../constants/routes";
 
 const localAuthAdmin = getLocalAuthAdminAndToken();
 const localAuthCompanyAdmin = getLocalAuthCompanyAdminAndToken();
+const localAuthApplicant = getLocalAuthApplicantAndToken();
 
-/**
- * @typedef {{
- *  authAdmin: {id: string; username: string; type: string} | null;
- *  authApplicant: null;
- *  authCompany: null;
- *  loginLoading: boolean;
- *  loginAdminApiAction: ({username: string; password: string}, () => void, () => void) => Promise<void>;
- *  logoutLoading: boolean;
- *  logoutAdminApiAction: (() => void, () => void) => Promise<void>;
- * }} IAuthContext
- */
-
-/**
- * @type {React.Context<IAuthContext>}
- */
 const AuthContext = createContext({
   authAdmin: localAuthAdmin,
-  authCompany: null,
-  authApplicant: null,
+  authCompany: localAuthCompanyAdmin,
+  authApplicant: localAuthApplicant,
   loginLoading: false,
   logoutLoading: false,
   loginAdminApiAction: async () => null,
   logoutAdminApiAction: async () => null,
   loginCompanyAdminApiAction: async () => null,
   logoutCompanyAdminApiAction: async () => null,
+  registerApplicantApiAction: async () => null,
+  loginApplicantApiAction: async () => null,
+  logoutApplicantApiAction: async () => null,
 });
 
 const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+
   const [authAdmin, setAuthAdmin] = useState(localAuthAdmin?.authAdmin ?? null);
 
   const [authCompany, setAuthCompany] = useState(
     localAuthCompanyAdmin?.companyAdmin ?? null
+  );
+
+  const [authApplicant, setAuthApplicant] = useState(
+    localAuthApplicant?.authApplicant ?? null
   );
 
   const [loginLoading, setLoginLoading] = useState(false);
@@ -58,6 +62,8 @@ const AuthProvider = ({ children }) => {
     setAuthorizationApi(localAuthAdmin.authAdminToken);
   } else if (localAuthCompanyAdmin) {
     setAuthorizationApi(localAuthCompanyAdmin.authCompanyToken);
+  } else if (localAuthApplicant) {
+    setAuthorizationApi(localAuthApplicant.authApplicantToken);
   }
 
   const removeAdminAuthData = useCallback(() => {
@@ -70,6 +76,11 @@ const AuthProvider = ({ children }) => {
     setAuthCompany(null);
   }, []);
 
+  const removeApplicantAuthData = useCallback(() => {
+    removeLocalAuthApplicantAndToken();
+    setAuthApplicant(null);
+  }, []);
+
   const loginAdminApiAction = useCallback(
     async ({ username, password }, onSuccess, onFailure) => {
       try {
@@ -77,6 +88,7 @@ const AuthProvider = ({ children }) => {
 
         // remove previous auth data
         removeCompanyAuthData();
+        removeApplicantAuthData();
 
         const { data } = await loginAdminApi({ username, password });
         const { admin, authAdminToken } = data;
@@ -84,7 +96,10 @@ const AuthProvider = ({ children }) => {
         setAuthorizationApi(authAdminToken);
         setLocalAuthAdminAndToken(admin, authAdminToken);
         setLoginLoading(false);
-        Alert({ message: "Logged in as " + admin.username, type: "info" });
+        showToastAction({
+          message: "Logged in as " + admin.username,
+          type: "info",
+        });
         if (onSuccess) onSuccess();
       } catch (err) {
         setLoginLoading(false);
@@ -96,7 +111,7 @@ const AuthProvider = ({ children }) => {
         if (onFailure) onFailure();
       }
     },
-    [removeCompanyAuthData]
+    [removeCompanyAuthData, removeApplicantAuthData]
   );
 
   const logoutAdminApiAction = useCallback(
@@ -107,7 +122,7 @@ const AuthProvider = ({ children }) => {
         removeAdminAuthData();
         removeAuthorizationApi();
         setLogoutLoading(false);
-        Alert({ message: "Logged out", type: "info" });
+        showToastAction({ message: "Logged out", type: "info" });
         if (onSuccess) onSuccess();
       } catch (err) {
         setLogoutLoading(false);
@@ -129,6 +144,7 @@ const AuthProvider = ({ children }) => {
 
         // remove previous auth data
         removeAdminAuthData();
+        removeApplicantAuthData();
 
         const { data } = await companyLoginApi({ username, password });
         const { companyAdmin, authCompanyToken } = data;
@@ -137,7 +153,7 @@ const AuthProvider = ({ children }) => {
         setLocalAuthCompanyAdminAndToken(companyAdmin, authCompanyToken);
         setLoginLoading(false);
 
-        Alert({
+        showToastAction({
           message: "Logged in as " + companyAdmin.username,
           type: "info",
         });
@@ -153,7 +169,7 @@ const AuthProvider = ({ children }) => {
         if (onFailure) onFailure();
       }
     },
-    [removeAdminAuthData]
+    [removeAdminAuthData, removeApplicantAuthData]
   );
 
   const logoutCompanyAdminApiAction = useCallback(
@@ -164,7 +180,7 @@ const AuthProvider = ({ children }) => {
         removeCompanyAuthData();
         removeAuthorizationApi();
         setLogoutLoading(false);
-        Alert({ message: "Logged out", type: "info" });
+        showToastAction({ message: "Logged out", type: "info" });
         if (onSuccess) onSuccess();
       } catch (err) {
         setLogoutLoading(false);
@@ -179,17 +195,120 @@ const AuthProvider = ({ children }) => {
     [removeCompanyAuthData]
   );
 
+  const registerApplicantApiAction = useCallback(
+    async (formData, onSuccess, onFailure) => {
+      try {
+        setLoginLoading(true);
+
+        // remove previous auth data
+        removeAdminAuthData();
+        removeCompanyAuthData();
+
+        const { data } = await registerApplicantApi(formData);
+        setAuthApplicant(data.authApplicant);
+        setAuthorizationApi(data.authApplicantToken);
+        setLocalAuthApplicantAndToken(
+          data.authApplicant,
+          data.authApplicantToken
+        );
+        setLoginLoading(false);
+
+        showToastAction({
+          message: "Logged in as " + data.authApplicant.name,
+          type: "info",
+        });
+
+        if (onSuccess) onSuccess();
+      } catch (err) {
+        setLoginLoading(false);
+        const { data, error } = handlePublicApiError(err);
+        showErrorToastAction({
+          message: "Failed to register",
+          description: data?.message || error,
+        });
+        if (onFailure) onFailure();
+      }
+    },
+    [removeAdminAuthData, removeCompanyAuthData]
+  );
+
+  const loginApplicantApiAction = useCallback(
+    async ({ email, password }, onSuccess, onFailure) => {
+      try {
+        console.log(email, password);
+        setLoginLoading(true);
+
+        // remove previous auth data
+        removeAdminAuthData();
+        removeCompanyAuthData();
+
+        const { data } = await loginApplicantApi({ email, password });
+        setAuthApplicant(data.authApplicant);
+        setAuthorizationApi(data.authApplicantToken);
+        setLocalAuthApplicantAndToken(
+          data.authApplicant,
+          data.authApplicantToken
+        );
+        setLoginLoading(false);
+
+        showToastAction({
+          message: "Logged in as " + data.authApplicant.name,
+          type: "info",
+        });
+
+        if (onSuccess) onSuccess();
+      } catch (err) {
+        setLoginLoading(false);
+        const { data, error } = handlePublicApiError(err);
+        showErrorToastAction({
+          message: "Failed to login",
+          description: data?.message || error,
+        });
+        if (onFailure) onFailure();
+      }
+    },
+    [removeAdminAuthData, removeCompanyAuthData]
+  );
+
+  const logoutApplicantApiAction = useCallback(
+    async (onSuccess, onFailure) => {
+      setLogoutLoading(true);
+      try {
+        removeApplicantAuthData();
+        removeAuthorizationApi();
+        setLogoutLoading(false);
+        showToastAction({ message: "Logged out", type: "info" });
+        await logoutApplicantApi();
+        navigate(APPLICANT_LOGIN_PAGE);
+        if (onSuccess) onSuccess();
+      } catch (err) {
+        setLogoutLoading(false);
+        const { data, error } = handlePublicApiError(err);
+        // showErrorToastAction({
+        //   message: "Failed to logout",
+        //   description: data?.message || error,
+        // });
+        if (onFailure) onFailure();
+      }
+    },
+    [removeApplicantAuthData]
+  );
+
   return (
     <AuthContext.Provider
       value={{
         authAdmin,
         authCompany,
+        authApplicant,
         loginLoading,
         logoutLoading,
         loginAdminApiAction,
         logoutAdminApiAction,
         loginCompanyAdminApiAction,
         logoutCompanyAdminApiAction,
+        registerApplicantApiAction,
+        loginApplicantApiAction,
+        logoutApplicantApiAction,
       }}
     >
       {children}

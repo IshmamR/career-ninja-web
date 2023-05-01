@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { Dropdown, Menu, Space, Typography } from "antd";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ADMIN_LOGIN_ROUTE } from "../../constants/routes";
 import { useAuthContext } from "../../contexts/AuthContext";
@@ -57,19 +57,19 @@ const AdminDashboardLayout = ({ children }) => {
 
   const items = [
     getItem(
-      <a href="/admin/companies">Companies</a>,
+      <Link to="/admin/companies">Companies</Link>,
       "/admin/companies",
       <MailOutlined />
     ),
 
     getItem(
-      <a href="/admin/fields">Fields</a>,
+      <Link to="/admin/fields">Fields</Link>,
       "/admin/fields",
       <MailOutlined />
     ),
 
     getItem(
-      <a href="/admin/skills">Skills</a>,
+      <Link to="/admin/skills">Skills</Link>,
       "/admin/skills",
       <MailOutlined />
     ),

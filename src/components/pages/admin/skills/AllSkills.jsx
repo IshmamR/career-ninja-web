@@ -1,4 +1,4 @@
-import { Alert, Button, Input, Modal, Select, Table } from "antd";
+import { Button, Input, Modal, Select, Table } from "antd";
 import React, { useState, useEffect, useCallback } from "react";
 import { getAllFieldsApi } from "../../../../api/fields/fieldApi";
 import {
@@ -12,6 +12,7 @@ import {
   deleteSkillApi,
   getAllSkillsApi,
 } from "../../../../api/skills/skillApi";
+import { showErrorToastAction } from "../../../../utils/toast";
 
 const AllSkills = () => {
   const { logoutAdminApiAction } = useAuthContext();
@@ -36,7 +37,9 @@ const AllSkills = () => {
       setFields(data.fields);
     } catch (err) {
       const { data, error } = handlePublicApiError(err);
-      Alert({ message: data?.message || error || "Something went wrong" });
+      showErrorToastAction({
+        message: data?.message || error || "Something went wrong",
+      });
     }
   }, []);
 
@@ -57,7 +60,9 @@ const AllSkills = () => {
       } catch (err) {
         setLoading(false);
         const { data, error } = handlePublicApiError(err);
-        Alert({ message: data?.message || error || "Something went wrong" });
+        showErrorToastAction({
+          message: data?.message || error || "Something went wrong",
+        });
       }
     },
     [pageNo]
@@ -88,7 +93,9 @@ const AllSkills = () => {
     } catch (err) {
       setAddModal((prev) => ({ ...prev, loading: false }));
       const { data, error } = handlePrivateApiError(err, logoutAdminApiAction);
-      Alert({ message: data?.message || error || "Something went wrong" });
+      showErrorToastAction({
+        message: data?.message || error || "Something went wrong",
+      });
     }
   };
 
@@ -101,7 +108,9 @@ const AllSkills = () => {
     } catch (err) {
       setDeleteLoading(undefined);
       const { data, error } = handlePrivateApiError(err, logoutAdminApiAction);
-      Alert({ message: data?.message || error || "Something went wrong" });
+      showErrorToastAction({
+        message: data?.message || error || "Something went wrong",
+      });
     }
   };
 
